@@ -27,7 +27,7 @@ export const userRegister = async (req: Request, res: Response) => {
     
     // Forward the POST request to the tracking microservice, including the user data
     const userResponse = await axios.post(`http://localhost:8080/api/v1/users/register`, user);
-
+    console.log(userResponse)
     // Extract relevant data from the tracking service response
     const responseData = userResponse.data;
 

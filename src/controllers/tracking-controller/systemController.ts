@@ -1,14 +1,13 @@
 // systemController.ts
 import axios from 'axios';
 import { Request, Response } from 'express';
-import { tracking_systems_url } from '../../urls/tracking/trackingUrls';
 
 // Create a new system
 export const createSystem = async (req: Request, res: Response) => {
   try {
     const systemData = req.body;
     console.log('hello from create system', systemData);
-    
+
     // Forward the data to the tracking microservice
     const trackingResponse = await axios.post(
       `http://localhost:8080/api/v1/systems/create-system`,
@@ -16,10 +15,15 @@ export const createSystem = async (req: Request, res: Response) => {
     );
 
     // Handle the response from the tracking microservice (optional)
-    console.log('Response from tracking microservice:', trackingResponse.data);
+    console.log('Response from tracking microservice:', trackingResponse);
 
     // Return a response to the client (optional)
-    res.status(200).json({ message: 'System created successfully' });
+    res
+      .status(200)
+      .json({
+        message: 'System created successfully',
+        system: trackingResponse,
+      });
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error('Error forwarding data to tracking microservice:', error);
