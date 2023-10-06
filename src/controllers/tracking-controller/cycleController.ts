@@ -1,14 +1,16 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
-import { tracking_systems_url } from '../../urls/tracking/trackingUrls';
+import { tracking_cycles_url } from '../../urls/tracking/trackingUrls';
 
 // Create a new cycle for a specific system
 export const postCycle = async (req: Request, res: Response) => {
-  const systemId = req.params.systemId;
   try {
+    console.log('hello from postCycle')
+      const systemId = req.params.systemId;
+
     // Forward the data to the tracking microservice, including the system ID
     const trackingResponse = await axios.post(
-      `${tracking_systems_url}/${systemId}/cycles`,
+      `${tracking_cycles_url}/create-cycle/${systemId}`,
       req.body
     );
 
@@ -26,20 +28,25 @@ export const postCycle = async (req: Request, res: Response) => {
 
 // Get all cycles for a specific system
 export const getAllCyclesForSystem = async (req: Request, res: Response) => {
-  const systemId = req.params.systemId;
+  console.log('Hello from get Cycle By System ID')
+  const systemId = req.params._id;
+  console.log(systemId)
   try {
     // Forward the GET request to the tracking microservice, including the system ID
     const trackingResponse = await axios.get(
-      `${tracking_systems_url}/${systemId}/cycles`
+      `${tracking_cycles_url}/history/${systemId}`
     );
 
+    if (trackingResponse.status == 404) {
+      res.status(404).json({ error: 'Cycle Not Found' });
+    }
+    console.log(trackingResponse.data)
     // Return the response from the tracking microservice to the client
     res.status(200).json(trackingResponse.data);
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error(
       'Error fetching cycles for the system from tracking microservice:',
-      error
     );
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -52,7 +59,7 @@ export const getCycleById = async (req: Request, res: Response) => {
   try {
     // Forward the GET request to the tracking microservice, including the system ID and cycle ID
     const trackingResponse = await axios.get(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}`
+      `${tracking_cycles_url}/${systemId}/cycles/${cycleId}`
     );
 
     // Return the response from the tracking microservice to the client
@@ -74,7 +81,7 @@ export const updateCycle = async (req: Request, res: Response) => {
   try {
     // Forward the PUT request to the tracking microservice, including the system ID and cycle ID
     const trackingResponse = await axios.put(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}`,
+      `${tracking_cycles_url}/${systemId}/cycles/${cycleId}`,
       req.body
     );
 
@@ -97,7 +104,7 @@ export const deleteCycle = async (req: Request, res: Response) => {
   try {
     // Forward the DELETE request to the tracking microservice, including the system ID and cycle ID
     const trackingResponse = await axios.delete(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}`
+      `${tracking_cycles_url}/${systemId}/cycles/${cycleId}`
     );
 
     // Handle the response from the tracking microservice (optional)

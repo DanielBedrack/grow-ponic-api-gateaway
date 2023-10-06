@@ -1,10 +1,9 @@
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import dataRouter from './routes/dataRoute/index.routes';
-import trackingRouter from './routes/tracking-routes/index.routes';
-import notificationRouter from './routes/notifications-routes/index.routes';
 import bodyParser from 'body-parser';
+import rootRouter from './routes/index.routes';
+
 export class App {
   private app: Application;
 
@@ -12,12 +11,8 @@ export class App {
     dotenv.config();
     this.app = express();
     this.setting();
-    this.middlewares();
     this.routes();
     this.errors();
-    // this.app.get('/dataapi', (req, res, next) => {
-    //   res.send('Hello from Data Api');
-    // });
   }
 
   setting() {
@@ -28,15 +23,8 @@ export class App {
     this.app.use(bodyParser.json());
   }
 
-  middlewares() {
-    //this.app.use(morgan('dev'));
-  }
-
   routes() {
-    //this.app.use('/', allRouter)
-    this.app.use('/api/v1/data', dataRouter);
-    this.app.use('/api/v1/tracking', trackingRouter);
-    this.app.use('/api/v1/notification', notificationRouter);
+    this.app.use('/api/v1', rootRouter);
   }
 
   errors() {
@@ -55,7 +43,7 @@ export class App {
   async listen() {
     //this.connection();
     this.app.listen(this.app.get('port'));
-    console.log('API Gateway is running on port ', this.app.get('port'));
+    console.log('API Gateway Server is running on PORT :', this.app.get('port'));
   }
 }
 // import express from 'express';

@@ -14,7 +14,7 @@ const systemRouter = Router();
 systemRouter.post('/create-system', createSystem);
 
 // Get all systems
-systemRouter.get('/systems', getAllSystems);
+systemRouter.get('/:_id', getAllSystems);
 
 // Get a specific system by ID
 systemRouter.get('/:systemId', getSystemById);

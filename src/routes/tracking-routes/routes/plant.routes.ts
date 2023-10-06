@@ -7,13 +7,13 @@ import {
   deletePlant,
 } from '../../../controllers/tracking-controller/plantController';
 
-const plantRouter = express.Router({ mergeParams: true });
+const plantRouter = express.Router();
 
 // Create a new plant for a specific cycle
 plantRouter.post('/', createPlant);
 
 // Get all plants for a specific cycle
-plantRouter.get('/', getAllPlantsForCycle);
+plantRouter.get('/:_id', getAllPlantsForCycle);
 
 // Get a specific plant by ID for a specific cycle
 plantRouter.get('/:plantId', getPlantById);

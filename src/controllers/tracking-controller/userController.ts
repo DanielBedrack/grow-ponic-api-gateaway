@@ -24,10 +24,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const userRegister = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    
+
     // Forward the POST request to the tracking microservice, including the user data
-    const userResponse = await axios.post(`http://localhost:8080/api/v1/users/register`, user);
-    console.log(userResponse)
+    const userResponse = await axios.post(
+      `http://localhost:8080/api/v1/users/register`,
+      user
+    );
+    console.log(userResponse);
     // Extract relevant data from the tracking service response
     const responseData = userResponse.data;
 
@@ -36,8 +39,7 @@ export const userRegister = async (req: Request, res: Response) => {
       // Send the relevant data to the client
       return res.status(200).json({
         _id: responseData._id,
-        firstName: responseData.firstName,
-        lastName: responseData.lastName,
+        name: responseData.name,
         email: responseData.email,
         token: responseData.token,
         message: 'Registration successful.',
@@ -55,8 +57,6 @@ export const userRegister = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-
 
 export const getUserByEmail = async (req: Request, res: Response) => {
   try {
@@ -76,11 +76,15 @@ export const getUserByEmail = async (req: Request, res: Response) => {
 
 export const userLogin = async (req: Request, res: Response) => {
   try {
+    console.log('hello from userLogin')
+    console.log(req.body)
     // Forward the GET request to the tracking microservice, including the system ID and cycle ID
-    const userResponse = await axios.post(`${tracking_users_url}/login`);
+    const userResponse = await axios.post(`${tracking_users_url}/login`, req.body);
 
     // Return the response from the tracking microservice to the client
-    res.status(200).json(userResponse.data);
+    res
+      .status(200)
+      .json({ message: 'User login successfully', data: userResponse.data });
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error('Error fetching user from tracking microservice:', error);

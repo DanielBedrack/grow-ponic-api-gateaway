@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
-import { tracking_systems_url } from '../../urls/tracking/trackingUrls';
+import { tracking_plants_url } from '../../urls/tracking/trackingUrls';
 
 // Create a new plant for a specific cycle
 export const createPlant = async (req: Request, res: Response) => {
@@ -9,7 +9,7 @@ export const createPlant = async (req: Request, res: Response) => {
   try {
     // Forward the data to the tracking microservice, including the system ID and cycle ID
     const trackingResponse = await axios.post(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}/plants`,
+      `${tracking_plants_url}/${systemId}/cycles/${cycleId}/plants`,
       req.body
     );
 
@@ -27,12 +27,11 @@ export const createPlant = async (req: Request, res: Response) => {
 
 // Get all plants for a specific cycle
 export const getAllPlantsForCycle = async (req: Request, res: Response) => {
-  const systemId = req.params.systemId;
-  const cycleId = req.params.cycleId;
+  const cycleId = req.params._id;
   try {
     // Forward the GET request to the tracking microservice, including the system ID and cycle ID
     const trackingResponse = await axios.get(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}/plants`
+      `${tracking_plants_url}/all-plants/${cycleId}`
     );
 
     // Return the response from the tracking microservice to the client
@@ -55,7 +54,7 @@ export const getPlantById = async (req: Request, res: Response) => {
   try {
     // Forward the GET request to the tracking microservice, including the system ID, cycle ID, and plant ID
     const trackingResponse = await axios.get(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`
+      `${tracking_plants_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`
     );
 
     // Return the response from the tracking microservice to the client
@@ -78,7 +77,7 @@ export const updatePlant = async (req: Request, res: Response) => {
   try {
     // Forward the PUT request to the tracking microservice, including the system ID, cycle ID, and plant ID
     const trackingResponse = await axios.put(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`,
+      `${tracking_plants_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`,
       req.body
     );
 
@@ -99,12 +98,11 @@ export const deletePlant = async (req: Request, res: Response) => {
   const systemId = req.params.systemId;
   const cycleId = req.params.cycleId;
   const plantId = req.params.plantId;
-  // notice - const apiUrl = `/api/someEndpoint?systemId=${systemId}&cycleId=${cycleId}&plantId=${plantId}`;
 
   try {
     // Forward the DELETE request to the tracking microservice, including the system ID, cycle ID, and plant ID
     const trackingResponse = await axios.delete(
-      `${tracking_systems_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`
+      `${tracking_plants_url}/${systemId}/cycles/${cycleId}/plants/${plantId}`
     );
 
     // Handle the response from the tracking microservice (optional)

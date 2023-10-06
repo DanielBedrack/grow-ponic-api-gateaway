@@ -4,10 +4,10 @@ import { deleteCycle, getAllCyclesForSystem, getCycleById, postCycle, updateCycl
 const cycleRouter = Router();
 
 // Create a new cycle for a specific system
-cycleRouter.post('/', postCycle);
+cycleRouter.post('/create-cycle/:systemId', postCycle);
 
 // Get all cycles for a specific system
-cycleRouter.get('/', getAllCyclesForSystem);
+cycleRouter.get('/:_id', getAllCyclesForSystem);
 
 // Get a specific cycle by ID for a specific system
 cycleRouter.get('/:cycleId', getCycleById);

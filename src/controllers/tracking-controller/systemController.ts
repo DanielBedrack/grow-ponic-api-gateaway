@@ -5,25 +5,31 @@ import { Request, Response } from 'express';
 // Create a new system
 export const createSystem = async (req: Request, res: Response) => {
   try {
+    console.log('hello from create system func')
     const systemData = req.body;
-    console.log('hello from create system', systemData);
 
     // Forward the data to the tracking microservice
     const trackingResponse = await axios.post(
       `http://localhost:8080/api/v1/systems/create-system`,
-      systemData
+      systemData,
+      {
+        headers: req.headers,
+      }
     );
 
-    // Handle the response from the tracking microservice (optional)
-    console.log('Response from tracking microservice:', trackingResponse);
+    // Check if the trackingResponse status is 200 before sending a response
+    if (trackingResponse.status === 200) {
+      // Extract the relevant data you want to send in the response
+      const responseData = trackingResponse.data;
+      console.log(trackingResponse.data);
 
-    // Return a response to the client (optional)
-    res
-      .status(200)
-      .json({
-        message: 'System created successfully',
-        system: trackingResponse,
-      });
+      res.status(200).send(trackingResponse.data);
+    } else {
+      // Handle other response statuses if needed
+      res
+        .status(trackingResponse.status)
+        .json({ error: 'Failed to create system' });
+    }
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error('Error forwarding data to tracking microservice:', error);
@@ -33,14 +39,20 @@ export const createSystem = async (req: Request, res: Response) => {
 
 // Get all systems
 export const getAllSystems = async (req: Request, res: Response) => {
+  console.log('Hello from get all systems func');
   try {
+    const userEmail = req.params.email;
+    console.log(userEmail);
     // Forward the GET request to the tracking microservice
     const trackingResponse = await axios.get(
-      'http://tracking-microservice-url/api/systems'
+      `http://localhost:8080/api/v1/systems/${userEmail}`
     );
-
+    console.log(trackingResponse.data);
+    if (trackingResponse.status == 404) {
+      res.status(404).json({ message: 'No Systems Found' });
+    }
     // Return the response from the tracking microservice to the client
-    res.status(200).json(trackingResponse.data);
+    res.status(200).send(trackingResponse.data);
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error('Error fetching systems from tracking microservice:', error);
@@ -77,7 +89,7 @@ export const updateSystem = async (req: Request, res: Response) => {
     );
 
     // Return the response from the tracking microservice to the client
-    res.status(200).json(trackingResponse.data);
+    res.status(200).json(trackingResponse);
   } catch (error) {
     // Handle errors and send an error response to the client
     console.error('Error updating a system in tracking microservice:', error);

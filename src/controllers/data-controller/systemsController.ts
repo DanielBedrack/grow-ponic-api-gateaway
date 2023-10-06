@@ -19,8 +19,8 @@ export const getAllSystems = async (req: Request, res: Response) => {
 
 export const getSystemByUserId = async (req: Request, res: Response) => {
   try {
-    const systemId = req.params._id; // Get the _id parameter from the URL
-    const systemResponse = await axios.get(`${data_systems_url}/${systemId}`);
+    const { _id } = req.params; 
+    const systemResponse = await axios.get(`${data_systems_url}/${_id}`);
 
     if (!systemResponse) {
       res.status(404).json({ message: 'System Not Found By User ID' });

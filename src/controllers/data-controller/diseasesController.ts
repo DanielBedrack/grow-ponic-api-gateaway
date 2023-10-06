@@ -16,7 +16,7 @@ export const getAllDiseases = async (req: Request, res: Response) => {
 
 export const getDiseaseById = async (req: Request, res: Response) => {
   try {
-    const { _id } = req.params; // Get the _id parameter from the URL
+    const { _id } = req.params; 
     const response = await axios.get(`${data_diseases_url}/${_id}`);
 
     if(!response){
